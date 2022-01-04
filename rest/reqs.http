@@ -1,0 +1,46 @@
+@host = http://127.0.0.1:8080/v1
+###
+GET http://127.0.0.1:8080/health HTTP/1.1
+###
+GET {{host}}/user/{{create.response.body.id}} HTTP/1.1
+###
+GET {{host}}/user/uuid_bad_request HTTP/1.1
+###
+# @name create
+POST {{host}}/user/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "User",
+    "birth_date": "1981-03-15",
+    "custom_data": {
+        "random": 4
+    }
+}
+###
+curl --request POST \
+  --url http://127.0.0.1:8080/v1/user/ \
+  --header 'content-type: application/json' \
+  --header 'user-agent: vscode-restclient' \
+  --data '{"id": "a4ca8b20-c598-47e5-a394-78fe2e73909d","name": "User","birth_date": "1981-03-15","custom_data": {"random": 4}}'
+###
+# @name update
+PUT {{host}}/user/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "{{create.response.body.id}}",
+    "name": "Updated",
+    "birth_date": "1981-03-15",
+    "custom_data": {
+        "random": 5
+    }
+}
+###
+curl --request PUT \
+  --url http://127.0.0.1:8080/v1/user/ \
+  --header 'content-type: application/json' \
+  --header 'user-agent: vscode-restclient' \
+  --data '{"id": "d302e66e-6d1a-11ec-ac95-0242ac150002","name": "Updated","birth_date": "1981-03-15","custom_data": {"random": 5}}'
+###
+DELETE {{host}}/user/{{create.response.body.id}} HTTP/1.1

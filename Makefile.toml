@@ -1,0 +1,46 @@
+[tasks.dev-watch]
+install_crate = "cargo-watch"
+command = "cargo"
+args = ["watch", "-x", "run"]
+
+[tasks.build-debug]
+script_runner = "@shell"
+script = '''
+cargo run
+'''
+
+[tasks.build-release]
+script_runner = "@shell"
+script = '''
+cargo run --release
+'''
+
+[tasks.db-start]
+script_runner = "@shell"
+script = '''
+docker-compose up -d
+'''
+
+[tasks.db-stop]
+script_runner = "@shell"
+script = '''
+docker-compose down
+'''
+
+[tasks.db-create]
+install_crate = "sqlx-cli"
+command = "sqlx"
+args = ["database", "create"]
+
+[tasks.db-migration-add]
+install_crate = "sqlx-cli"
+command = "sqlx"
+args = ["migrate", "add", "${0}"]
+
+[tasks.db-migration-run]
+install_crate = "sqlx-cli"
+command = "sqlx"
+args = ["migrate", "run"]
+
+[tasks.reset]
+dependencies = ["db-stop", "db-start", "db-migration-run"]
